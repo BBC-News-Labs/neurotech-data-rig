@@ -33,6 +33,7 @@ file { "/etc/init/deja.conf":
   owner => "root",
   group => "root",
   mode => "644",
+  notify => Service["deja"],
 }
 
 service { "deja":
