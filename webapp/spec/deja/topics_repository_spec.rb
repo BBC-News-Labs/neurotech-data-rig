@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'deja/topics_repository'
 describe Deja::TopicsRepository do
 

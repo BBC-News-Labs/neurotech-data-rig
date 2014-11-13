@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'deja/models/video'
 describe Deja::Models::Video do
   let(:video_name) { "Some video file.mp4" }

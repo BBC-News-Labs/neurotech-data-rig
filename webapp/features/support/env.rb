@@ -1,3 +1,4 @@
+require 'simplecov'
 require 'deja/application'
 require 'capybara/cucumber'
 ENV["DEJA_VIDEOS_ROOT"] = "/srv/deja-video"

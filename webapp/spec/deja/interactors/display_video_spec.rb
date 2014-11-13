@@ -1,3 +1,4 @@
+require 'spec_helper'
 require "deja/interactors/display_video"
 describe Deja::Interactors::DisplayVideo do
   let(:video_selector) {

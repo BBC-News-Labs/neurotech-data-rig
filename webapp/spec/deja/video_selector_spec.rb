@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'deja/video_selector'
 describe Deja::VideoSelector do
   let(:topics_repository) {

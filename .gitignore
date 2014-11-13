@@ -1,3 +1,4 @@
 video
 .vagrant
 webapp/.bundle
+coverage
