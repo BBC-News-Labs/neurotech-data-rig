@@ -75,3 +75,30 @@ service { "nginx":
   require => Package["nginx"],
 }
 
+package { "phantomjs":
+  ensure => "installed",
+}
+
+package { "openjdk-7-jdk":
+  ensure => "installed",
+}
+
+exec { "download-logstash":
+  command => "/usr/bin/wget -O /tmp/logstash-1.4.2.tar.gz https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz",
+  unless => "/usr/bin/test -d /usr/local/logstash-1.4.2",
+}
+
+exec { "install-logstash":
+  command => "/bin/tar -xzf /tmp/logstash-1.4.2.tar.gz -C /usr/local",
+  require => Exec["download-logstash"],
+}
+
+file {"/usr/local/logstash":
+  ensure => "link",
+  target => "/usr/local/logstash-1.4.2",
+  require => Exec["install-logstash"],
+}
+
+package { "libzmq-dev":
+  ensure => "installed",
+}
