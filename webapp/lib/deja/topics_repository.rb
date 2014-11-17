@@ -8,9 +8,11 @@ module Deja
     end
 
     def get_all
-      filesystem.ls(videos_root).map { |topic_name|
-        topic_factory.call(topic_name, videos(topic_name)) 
-      }
+      filesystem.ls(videos_root).map { |topic_name| get(topic_name) }
+    end
+
+    def get(topic_name)
+      topic_factory.call(topic_name, videos(topic_name))
     end
 
     private

@@ -53,4 +53,25 @@ describe Deja::TopicsRepository do
       expect(repository.get_all).to eq([topic])
     end
   end
+
+  describe "#get" do
+    it "gets the list of videos available for the passed topic" do
+      repository.get(topic_name)
+      expect(filesystem).to have_received(:ls).with(videos_root, topic_name)
+    end
+
+    it "builds a video for each video file" do
+      repository.get(topic_name)
+      expect(video_factory).to have_received(:call).with(video_name, topic_name)
+    end
+
+    it "builds a topic for the given topic and its videos" do
+      repository.get(topic_name)
+      expect(topic_factory).to have_received(:call).with(topic_name, [video])
+    end
+
+    it "returns the topic" do
+      expect(repository.get(topic_name)).to eq(topic)
+    end
+  end
 end

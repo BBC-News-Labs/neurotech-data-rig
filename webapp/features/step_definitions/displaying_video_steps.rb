@@ -1,9 +1,10 @@
 Given(/^I have watched a video$/) do
   visit "/"
-  @watched_video_url = page.find("#player source")["src"]
   execute_script %{
     HTMLElement.prototype["play"] = function() {};
+    HTMLElement.prototype["load"] = function() {};
   }
+  @watched_video_url = page.find("#player source")["src"]
   click_button "Play"
   execute_script %{
     var player = document.getElementById("player");
@@ -34,11 +35,13 @@ Then(/^I should be prompted to play the video$/) do
 end
 
 Then(/^I should be shown another video on the same topic$/) do
+  sleep(1)
   new_video_url = page.find("#player source")["src"]
   expect(new_video_url.split("/")[2]).to eq(@watched_video_url.split("/")[2])
 end
 
 Then(/^I should be shown a video on a different topic$/) do
+  sleep(1)
   new_video_url = page.find("#player source")["src"]
   expect(new_video_url.split("/")[2]).not_to eq(@watched_video_url.split("/")[2])
 end
