@@ -112,6 +112,18 @@ package { "elasticsearch":
   require => Apt::Source["elasticsearch"],
 }
 
+file { "/etc/elasticsearch/elasticsearch.yml":
+  source  => "/tmp/puppet-files/elasticsearch.yml",
+  require => Package["elasticsearch"],
+  notify  => Service["elasticsearch"],
+}
+
+service { "elasticsearch":
+  ensure  => "running",
+  enable  => "true",
+  require => Package["elasticsearch"],
+}
+
 # LOGSTASH
 
 exec { "download-logstash":
@@ -161,3 +173,26 @@ service { "logstash":
   provider => "upstart", 
 }
 
+# KIBANA
+
+exec { "download-kibana":
+  command => "/usr/bin/wget -O /tmp/kibana-3.1.2.tar.gz https://download.elasticsearch.org/kibana/kibana/kibana-3.1.2.tar.gz",
+  unless  => "/usr/bin/test -d /usr/local/kibana-3.1.2"
+}
+
+exec { "install-kibana": 
+  command => "/bin/tar -xzf /tmp/kibana-3.1.2.tar.gz -C /usr/local/",
+  require => Exec["download-kibana"],
+  unless  => "/usr/bin/test -d /usr/local/kibana-3.1.2",
+}
+
+file { "/usr/local/kibana": 
+  ensure  => "link",
+  target  => "/usr/local/kibana-3.1.2",
+  require => Exec["install-kibana"],
+}
+
+file { "/usr/local/kibana-3.1.2/config.js":
+  source  => "/tmp/puppet-files/kibana_config.js",
+  require => Exec["install-kibana"],
+}
