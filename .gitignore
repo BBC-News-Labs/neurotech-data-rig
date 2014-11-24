@@ -1,5 +1,6 @@
 video
 video_old
+video_new
 .vagrant
 webapp/.bundle
 coverage
