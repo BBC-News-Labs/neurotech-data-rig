@@ -14,6 +14,21 @@ var Deja = function() {
 
 Deja.prototype = {
   init: function() {
+    switch (window.location.pathname) {
+      case "/":
+        var player = new Deja.Player();
+        player.init();
+        break;
+    }
+  }
+};
+
+Deja.Player = function() {
+
+};
+
+Deja.Player.prototype = {
+  init: function() {
     this._playButton = document.getElementById("play"); 
     this._controls = document.getElementById("controls");
     this._player = document.getElementById("player")
@@ -76,6 +91,6 @@ Deja.prototype = {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-  var app = new Deja()
+  var app = new Deja();
   app.init();
 });
