@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+require 'zmq'
+
+REFRESH = ENV.fetch("DEJA_SENSOR_DATA_REFRESH", 50).to_f
+ADDRESS = ENV.fetch("DEJA_SENSOR_DATA_ADDRESS")
+
+MIN_X = 0
+MAX_X = 1920
+MIN_Y = 0
+MAX_Y = 1080
+MIN_FIX_DURATION=2
+MAX_FIX_DURATION=200
+MIN_STEP=1
+MAX_STEP=100
+FIXATION_PROBABILITY=1/200.0
+
+def walk_next(coords)
+  def nxt(prev, min, max)
+    step=rand(min..max)
+    lower = prev-step
+    higher = prev+step
+    [(lower if lower >= min), prev, (higher if higher <= max)].compact.sample
+  end
+  prev_x, prev_y = *coords
+  return [
+    nxt(prev_x, MIN_X, MAX_X),
+    nxt(prev_y, MIN_Y, MAX_Y)
+  ]
+end
+
+def walk_init
+  return [
+    rand(MIN_X..MAX_X),
+    rand(MIN_Y..MAX_Y)
+  ]
+end
+
+walk = Enumerator.new do |y|
+  coords = walk_init
+  y << coords
+  loop do
+    y << walk_next(coords)
+  end
+end
+
+
+context = ZMQ::Context.new
+socket = context.socket(ZMQ::PAIR)
+socket.connect(ADDRESS)
+walk.reduce(Time.now.to_i) do |last_fix, coords|
+  x, y = *coords
+  sleep 1/REFRESH
+  now = Time.now.to_i
+  socket.send ["eyeTrackingGazingPoint", now, x, y].join(":")
+  if rand <= FIXATION_PROBABILITY
+    duration = now - last_fix
+    socket.send ["eyeTrackingFixation", now, duration, x, y].join(":")
+    now
+  else 
+    last_fix
+  end
+end
+
