@@ -1,4 +1,6 @@
 video
+video_old
 .vagrant
 webapp/.bundle
 coverage
+.DS_Store
