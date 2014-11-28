@@ -2,6 +2,10 @@ class { 'apt':
   always_apt_update => true,
 }
 
+package { "build-essential":
+  ensure => "installed",
+}
+
 # RUBY
 
 apt::ppa { "ppa:brightbox/ruby-ng": }
@@ -19,7 +23,7 @@ class {'ruby::dev':
 
 package { "ruby2.1-dev":
   ensure  => "installed",
-  require => Class["ruby::dev"],
+  require => [Class["ruby::dev"], Apt::Ppa["ppa:brightbox/ruby-ng"]],
 }
 
 # DEJA WEBAPP
@@ -28,7 +32,7 @@ exec {'bundle install':
   command => '/bin/bash -c "bundle install --path ~/.gem"',
   user    => "vagrant",
   cwd     => "/srv/deja",
-  require => [Class["ruby::dev"], Package["ruby2.1-dev"]],
+  require => [Class["ruby::dev"], Package["ruby2.1-dev"], Package["build-essential"]],
 }
 
 file { "/etc/init/deja.conf":
@@ -87,7 +91,7 @@ package { "phantomjs":
 
 # JDK
 
-package { "openjdk-7-jdk":
+package { "openjdk-7-jre-headless":
   ensure => "installed",
 }
 
@@ -109,7 +113,7 @@ apt::source { "elasticsearch":
 
 package { "elasticsearch":
   ensure  => "installed",
-  require => Apt::Source["elasticsearch"],
+  require => [Package["openjdk-7-jre-headless"], Apt::Source["elasticsearch"]],
 }
 
 file { "/etc/elasticsearch/elasticsearch.yml":
