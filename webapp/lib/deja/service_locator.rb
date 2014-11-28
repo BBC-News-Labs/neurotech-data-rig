@@ -9,7 +9,7 @@ require 'deja/models/topic'
 require 'deja/models/video'
 
 module Deja
-  class Services 
+  class ServiceLocator
     def display_video_interactor
       Interactors::DisplayVideo.new(:video_selector => video_selector)
     end 
