@@ -104,7 +104,8 @@ Deja.ContentList = function() {
 Deja.ContentList.prototype = {
   init: function() {
     this._masonry =  new Masonry(this._list, {
-      itemSelector: 'li'
+      itemSelector: 'li',
+      gutter: 10
     });
     this._subscribeWikilinks();
     this._subscribeImages();
