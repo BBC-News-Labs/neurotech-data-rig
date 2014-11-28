@@ -20,6 +20,11 @@ end
 Capybara.default_driver = :poltergeist
 Faye::WebSocket.load_adapter('thin')
 
+pid = Process.pid
+SimpleCov.at_exit do
+  SimpleCov.result.format! if Process.pid == pid
+end
+
 broker_pid = fork {
   broker = Deja::Broker.new
   broker.start
