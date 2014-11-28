@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'zmq'
+require 'ffi-rzmq'
 
 REFRESH = ENV.fetch("DEJA_SENSOR_DATA_REFRESH", 50).to_f
 ADDRESS = ENV.fetch("DEJA_SENSOR_DATA_ADDRESS")
@@ -51,10 +51,10 @@ walk.reduce(Time.now.to_i) do |last_fix, coords|
   x, y = *coords
   sleep 1/REFRESH
   now = Time.now.to_i
-  socket.send ["eyeTrackingGazingPoint", now, x, y].join(":")
+  socket.send_string ["eyeTrackingGazingPoint", now, x, y].join(":")
   if rand <= FIXATION_PROBABILITY
     duration = now - last_fix
-    socket.send ["eyeTrackingFixation", now, duration, x, y].join(":")
+    socket.send_string ["eyeTrackingFixation", now, duration, x, y].join(":")
     now
   else 
     last_fix

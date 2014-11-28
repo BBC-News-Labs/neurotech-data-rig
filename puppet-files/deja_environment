@@ -1,0 +1,5 @@
+DEJA_PORT=3000
+DEJA_VIDEOS_ROOT=/srv/deja-video
+DEJA_SENSOR_DATA_ADDRESS=tcp://0.0.0.0:2120
+DEJA_FAYE_SERVER_URL="http://localhost/faye"
+
