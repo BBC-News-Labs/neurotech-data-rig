@@ -1,7 +1,29 @@
 require 'simplecov'
+require 'deja/broker'
 require 'deja/application'
 require 'capybara/cucumber'
 require 'capybara/poltergeist'
+require 'faye'
+require 'rack/handler/thin'
+
+PORT = 12345
+
 ENV["DEJA_VIDEOS_ROOT"] = "/srv/deja-video"
-Capybara.app = Deja::Application.new
-Capybara.default_driver= :poltergeist
+ENV["DEJA_SENSOR_DATA_ADDRESS"] = "tcp://0.0.0.0:2122"
+ENV["DEJA_FAYE_SERVER_URL"] = "http://localhost:#{PORT}/faye"
+
+Capybara.app = Deja::Application.new 
+Capybara.server_port = PORT
+Capybara.server do |app, port|
+  Rack::Handler::Thin.run(app, :Port => port)
+end
+Capybara.default_driver = :poltergeist
+Faye::WebSocket.load_adapter('thin')
+
+broker_pid = fork {
+  broker = Deja::Broker.new
+  broker.start
+}
+at_exit do
+  Process.kill("INT", broker_pid)
+end

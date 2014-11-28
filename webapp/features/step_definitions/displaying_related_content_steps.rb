@@ -4,13 +4,14 @@ end
 
 When(/^the video finishes playing$/) do
   test_client = TestMessagingClient.new
-  test_client.send("videoPlaybackEnded:1980_2Ronnies.mp4:1980:Comedy:The Two Ronies")
-  sleep 1
+  test_client.send_message("videoPlaybackEnded:1980_2Ronnies.mp4:1980:Comedy:The Two Ronnies")
+  sleep 2
+  test_client.finalize
 end
 
 Then(/^I should see a link to the wikipedia page about the given topic$/) do
-  expect(page).to have_css("a[href='http://en.wikipedia.org/wiki/The_Two_Ronnies']", :text => "The Two Ronnies")
-  expect(page).to have_content("The Two Ronnies is a BBC television comedy sketch show created by Bill Cotton for the BBC, which aired on BBC1 from 1971 to 1987. It featured the double act of Ronnie Barker and Ronnie Corbett, the \"Two Ronnies\" of the title.")
+  expect(page).to have_css("a[href='http://en.wikipedia.org/wiki/The+Two+Ronnies']", :text => "THE TWO RONNIES")
+  expect(page).to have_content("The Two Ronnies is a BBC television comedy sketch show created by Bill Cotton for the BBC, which aired on BBC1 from 1971 to 1987. It featured the double...")
 end
 
 Then(/^I should see a link to a news article about the given topic$/) do
