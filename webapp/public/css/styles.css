@@ -1,6 +1,8 @@
 body {
-  background-color: #333;
+  background-color: #ddd;
   margin: 0 auto;
+  font-family: "Helvetica Neue", "Helvetica", "Verdana", sans-serif;
+  color: #333;
 }
 
 video {
@@ -12,6 +14,15 @@ video {
   z-index: -100;
 }
 
+a {
+  color: #333;
+}
+
+
+a:hover {
+  text-decoration: none;
+}
+
 #controls {
   margin: 0 auto;
   margin-top: 1em;
@@ -21,4 +32,33 @@ video {
 
 #controls button {
   font-size: 2em;
+}
+
+#related_content_items {
+  padding: 1em;
+  margin: 0;
+  list-style-type: none;
+}
+
+#related_content_items li {
+  background-color: #fff;
+  padding: 1em;
+  width: 25%;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  box-shadow: 3px 3px 6px #aaa;
+}
+
+#related_content_items li h2 {
+  text-transform: uppercase;
+  margin-top:0;
+  margin-bottom: 1em;
+}
+
+#related_content_items li h2 a {
+  text-decoration: none;
+}
+
+#related_content_items li h2 a:hover {
+  text-decoration: underline;
 }

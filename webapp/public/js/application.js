@@ -19,6 +19,10 @@ Deja.prototype = {
         var player = new Deja.Player();
         player.init();
         break;
+      case "/related_content":
+        var contentList = new Deja.ContentList();
+        contentList.init();
+        break;
     }
   }
 };
@@ -87,6 +91,29 @@ Deja.Player.prototype = {
       }
     };
     request.send();
+  }
+};
+
+
+Deja.ContentList = function() {
+  this._client = new Faye.Client("/faye");
+  this._list = document.getElementById("related_content_items");
+  this._template = document.getElementById("related_content_item_template").innerHTML;
+};
+
+Deja.ContentList.prototype = {
+  init: function() {
+    var masonry =  new Masonry(this._list, {
+      itemSelector: 'li'
+    });
+    this._client.subscribe("/wikilink", bind(this, function(message) {
+      var element = document.createElement("li")
+      element.innerHTML = Mustache.render(this._template, message);
+      window.scrollTo(0,document.body.scrollHeight);
+      this._list.appendChild(element);
+      masonry.appended(element);
+      masonry.layout();
+    }));
   }
 };
 
