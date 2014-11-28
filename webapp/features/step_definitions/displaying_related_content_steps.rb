@@ -19,7 +19,7 @@ Then(/^I should see a link to a news article about the given topic$/) do
 end
 
 Then(/^I should see an image related to the given topic$/) do
-  pending # express the regexp above with the code you wish you had
+  expect(page).to have_css("img[src='http://www.simplyeighties.com/resources/263521~The-Two-Ronnies-Posters.jpg']")
 end
 
 Then(/^I should see a youtube video related to the given topic$/) do
