@@ -41,10 +41,21 @@ describe Deja::MessageHandlers::PlaybackEnded do
     "videoPlaybackEnded:moon_landings.mp4:1969:History:#{tag}" 
   }
 
+  let(:images_service) {
+    double(:images_service).tap do |images_service|
+      allow(images_service).to receive(:lookup_term).and_yield(image_url)
+    end
+  }
+
+  let(:image_url) {
+    double(:image_url) 
+  }
+
   subject(:handler) {
     Deja::MessageHandlers::PlaybackEnded.new({
       :publisher => publisher,
-      :wikipedia_service => wikipedia_service 
+      :wikipedia_service => wikipedia_service,
+      :images_service => images_service
     }) 
   }
 
@@ -60,6 +71,18 @@ describe Deja::MessageHandlers::PlaybackEnded do
         :title   => wikipedia_title,
         :snippet => wikipedia_snippet,
         :url     => wikipedia_url
+      })
+    end
+
+    it "calls the images service with the tag from the message" do
+      handler.call(message)
+      expect(images_service).to have_received(:lookup_term).with(tag)
+    end
+
+    it "responds on the /image channel with the image's url" do
+      handler.call(message)
+      expect(publisher).to have_received(:publish).with("/image", {
+        :url => image_url
       })
     end
   end

@@ -6,6 +6,7 @@ require 'json'
 require 'deja/message_dispatcher'
 require 'deja/message_handlers/playback_ended'
 require 'deja/services/wikipedia'
+require 'deja/services/google_image_search'
 require 'deja/async_http_client'
 
 module Deja

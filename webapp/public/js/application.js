@@ -108,7 +108,20 @@ Deja.ContentList.prototype = {
     });
     this._client.subscribe("/wikilink", bind(this, function(message) {
       var element = document.createElement("li")
+      element.setAttribute("class", "wikilink")
       element.innerHTML = Mustache.render(this._template, message);
+      window.scrollTo(0,document.body.scrollHeight);
+      this._list.appendChild(element);
+      masonry.appended(element);
+      masonry.layout();
+    }));
+
+    this._client.subscribe("/image", bind(this, function(message) {
+      var element = document.createElement("li")
+      element.setAttribute("class", "image")
+      var image = document.createElement("img")
+      image.setAttribute("src", message.url)
+      element.appendChild(image);
       window.scrollTo(0,document.body.scrollHeight);
       this._list.appendChild(element);
       masonry.appended(element);
