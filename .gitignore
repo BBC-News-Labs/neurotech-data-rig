@@ -5,3 +5,4 @@ video_new
 webapp/.bundle
 coverage
 .DS_Store
+puppet-files/deja_secrets_environment

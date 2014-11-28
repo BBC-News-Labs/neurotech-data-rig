@@ -67,14 +67,24 @@ file { "/etc/environment.d/deja":
   require => File["/etc/environment.d"],
 }
 
+file { "/etc/environment.d/deja_secrets":
+  ensure => "file",
+  source => "/tmp/puppet-files/deja_secrets_environment",
+  owner  => "root",
+  group  => "root",
+  mode   => "644",
+  notify => [Service["deja"], Service["deja-broker"]],
+  require => File["/etc/environment.d"],
+}
+
 service { "deja":
-  require  => [File["/etc/init/deja.conf"],  Exec["bundle install"], File["/etc/environment.d/deja"]],
+  require  => [File["/etc/init/deja.conf"],  Exec["bundle install"], File["/etc/environment.d/deja"], File["/etc/environment.d/deja_secrets"]],
   ensure   => "running",
   provider => "upstart",
 }
 
 service { "deja-broker":
-  require => [File["/etc/init/deja-broker.conf"], Exec["bundle install"], File["/etc/environment.d/deja"], Service["deja"]],
+  require => [File["/etc/init/deja-broker.conf"], Exec["bundle install"], File["/etc/environment.d/deja"], File["/etc/environment.d/deja_secrets"], Service["deja"]],
   ensure => "running",
   provider => "upstart",
 }
