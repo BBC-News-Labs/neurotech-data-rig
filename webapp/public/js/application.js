@@ -103,30 +103,40 @@ Deja.ContentList = function() {
 
 Deja.ContentList.prototype = {
   init: function() {
-    var masonry =  new Masonry(this._list, {
+    this._masonry =  new Masonry(this._list, {
       itemSelector: 'li'
     });
-    this._client.subscribe("/wikilink", bind(this, function(message) {
-      var element = document.createElement("li")
-      element.setAttribute("class", "wikilink")
-      element.innerHTML = Mustache.render(this._template, message);
-      window.scrollTo(0,document.body.scrollHeight);
-      this._list.appendChild(element);
-      masonry.appended(element);
-      masonry.layout();
-    }));
+    this._subscribeWikilinks();
+    this._subscribeImages();
+  },
 
-    this._client.subscribe("/image", bind(this, function(message) {
-      var element = document.createElement("li")
-      element.setAttribute("class", "image")
-      var image = document.createElement("img")
-      image.setAttribute("src", message.url)
-      element.appendChild(image);
-      window.scrollTo(0,document.body.scrollHeight);
-      this._list.appendChild(element);
-      masonry.appended(element);
-      masonry.layout();
+  _subscribeWikilinks: function() {
+    this._client.subscribe("/wikilink", bind(this, function(message) {
+      this._appendItem(bind(this, function(element) {
+        element.setAttribute("class", "wikilink")
+        element.innerHTML = Mustache.render(this._template, message);
+      }));
     }));
+  },
+
+  _subscribeImages: function() {
+    this._client.subscribe("/image", bind(this, function(message) {
+      this._appendItem(function(element) {
+        element.setAttribute("class", "image")
+        var image = document.createElement("img")
+        image.setAttribute("src", message.url)
+        element.appendChild(image);
+      });
+    }));
+  },
+
+  _appendItem: function(callback) {
+    var element = document.createElement("li")
+    callback(element)
+    window.scrollTo(0,document.body.scrollHeight);
+    this._list.appendChild(element);
+    this._masonry.appended(element);
+    this._masonry.layout();
   }
 };
 
