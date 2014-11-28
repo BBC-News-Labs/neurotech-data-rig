@@ -44,9 +44,38 @@ file { "/etc/init/deja.conf":
   notify => Service["deja"],
 }
 
+file { "/etc/init/deja-broker.conf":
+  ensure => "file",
+  source => "/tmp/puppet-files/deja-broker_upstart.conf",
+  owner  => "root",
+  group  => "root",
+  mode   => "644",
+  notify => Service["deja-broker"],
+}
+
+file { "/etc/environment.d":
+  ensure => "directory",
+}
+
+file { "/etc/environment.d/deja":
+  ensure => "file",
+  source => "/tmp/puppet-files/deja_environment",
+  owner  => "root",
+  group  => "root",
+  mode   => "644",
+  notify => [Service["deja"], Service["deja-broker"]],
+  require => File["/etc/environment.d"],
+}
+
 service { "deja":
-  require  => [File["/etc/init/deja.conf"],  Exec["bundle install"]],
+  require  => [File["/etc/init/deja.conf"],  Exec["bundle install"], File["/etc/environment.d/deja"]],
   ensure   => "running",
+  provider => "upstart",
+}
+
+service { "deja-broker":
+  require => [File["/etc/init/deja-broker.conf"], Exec["bundle install"], File["/etc/environment.d/deja"], Service["deja"]],
+  ensure => "running",
   provider => "upstart",
 }
 
@@ -147,7 +176,11 @@ file {"/usr/local/logstash":
   require => Exec["install-logstash"],
 }
 
-package { "libzmq-dev":
+package { "libzmq3-dev":
+  ensure => "installed",
+}
+
+package { "libzmq3":
   ensure => "installed",
 }
 
@@ -172,7 +205,7 @@ file { "/etc/logstash/logstash.conf":
 }
 
 service { "logstash":
-  require => [File["/etc/logstash/logstash.conf"], File["/etc/init/logstash.conf"],  File["/usr/local/logstash"], Package["libzmq-dev"], Package["elasticsearch"], Package["openjdk-7-jdk"]],
+  require => [File["/etc/logstash/logstash.conf"], File["/etc/init/logstash.conf"],  File["/usr/local/logstash"], Package["libzmq3-dev"], Package["elasticsearch"], Package["openjdk-7-jre-headless"], Package["libzmq3"], Service["deja-broker"]],
   ensure   => "running",
   provider => "upstart", 
 }

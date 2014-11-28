@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'deja/renderer'
-require 'deja/services'
+require 'deja/service_locator'
 module Deja
   module Routes
     class Base < Sinatra::Base
@@ -11,7 +11,7 @@ module Deja
         end
 
         def services
-          @services ||= Services.new
+          @services ||= ServiceLocator.new
         end
     end
   end
