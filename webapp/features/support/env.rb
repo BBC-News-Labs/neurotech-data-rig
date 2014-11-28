@@ -25,10 +25,11 @@ SimpleCov.at_exit do
   SimpleCov.result.format! if Process.pid == pid
 end
 
-broker_pid = fork {
-  broker = Deja::Broker.new
+broker_pid = fork do
+  broker = Deja::Broker.new(:persist_faye_connection => false)
   broker.start
-}
+end
+
 at_exit do
   Process.kill("INT", broker_pid)
 end
