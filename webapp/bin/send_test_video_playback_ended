@@ -2,7 +2,27 @@
 require 'ffi-rzmq'
 
 ADDRESS = ENV.fetch("DEJA_SENSOR_DATA_ADDRESS")
+TAGS = [
+  "The Two Ronnies",
+  "Blackadder",
+  "The Miner's Strike",
+  "Allo Allo",
+  "Boris Becker wins Wimbledon",
+  "Queen Live Aid",
+  "Challenger explosion",
+  "Grange Hill",
+  "Hillsborough",
+  "Salman Rushdie Fatwa",
+  "The Fall of the Berlin Wall",
+  "Release of Nelson Mandela",
+  "Margaret Thatcher Resigns",
+  "Kings Cross Fire",
+  "World cup final 1990",
+  "Sinclair C5",
+  "1987 great storm",
+  "1984 brighton bomb"
+]
 context = ZMQ::Context.new
 socket = context.socket(ZMQ::PAIR)
 socket.connect(ADDRESS)
-socket.send_string("videoPlaybackEnded:1981_2Ronnies.mp4:1980:Comedy:The Two Ronnies")
+socket.send_string("videoPlaybackEnded:1981_2Ronnies.mp4:1980:Comedy:#{TAGS.sample}")
