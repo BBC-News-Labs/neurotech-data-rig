@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__), "..", "lib")
+require 'json'
+require 'deja/services/wikipedia'
+require 'deja/async_http_client'
+require 'csv'
+require 'uri'
+require 'rack/utils'
+require 'open-uri'
+module WikilinkLister
+  class << self
+    def run
+      tags = CSV.foreach(data_file_path).flat_map { |row|
+        row[1..-1].each_slice(2).to_a.transpose[0]
+      }.uniq.each do |tag|
+        wikipedia_service.lookup_term(tag) do |result|
+          puts [tag, result.title, result.url, result.snippet].map { |f| f.inspect }.join(",")
+        end
+      end
+    end
+    
+    private
+
+    def data_file_path
+      File.join(File.dirname(__FILE__), "..", "data", "tags.csv")
+    end
+
+    def wikipedia_service
+      @wikipedia_service ||= Deja::Services::Wikipedia.new(
+        :http_client => http_client,
+        :json_parser => json_parser,
+      )
+    end
+
+    def http_client
+      Class.new do 
+        def get(url, params, &callback)
+          uri = URI.parse(url)
+          uri.query = Rack::Utils.build_query(params)
+          open(uri) do |file|
+            callback.call(file.read)
+          end
+        end
+      end.new
+    end
+
+    def json_parser
+      JSON
+    end
+  end
+end
+WikilinkLister.run
