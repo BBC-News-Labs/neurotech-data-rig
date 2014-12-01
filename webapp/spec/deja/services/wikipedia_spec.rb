@@ -87,7 +87,7 @@ describe Deja::Services::Wikipedia do
         result = r 
       end
       
-      expect(result.url).to eq("http://en.wikipedia.org/wiki/Only+Fools+and+Horses");
+      expect(result.url).to eq("http://en.wikipedia.org/wiki/Only_Fools_and_Horses");
     end
   end
 end

@@ -13,7 +13,7 @@ module Deja
         end
 
         def path
-          CGI.escape(title)
+          CGI.escape(title.gsub(/\s+/, "_"))
         end
       end
 

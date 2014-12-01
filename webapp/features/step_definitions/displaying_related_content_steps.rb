@@ -11,7 +11,7 @@ When(/^the video finishes playing$/) do
 end
 
 Then(/^I should see a link to the wikipedia page about the given topic$/) do
-  expect(page).to have_css("a[href='http://en.wikipedia.org/wiki/The+Two+Ronnies']", :text => "THE TWO RONNIES")
+  expect(page).to have_css("a[href='http://en.wikipedia.org/wiki/The_Two_Ronnies']", :text => "THE TWO RONNIES")
   expect(page).to have_content("The Two Ronnies is a BBC television comedy sketch show created by Bill Cotton for the BBC, which aired on BBC1 from 1971 to 1987. It featured the double...")
 end
 
