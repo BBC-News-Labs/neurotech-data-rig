@@ -97,11 +97,15 @@ module Deja
 
       def images_service
         Deja::Services::GoogleImageSearch.new(
+          :number_of_images => number_of_images,
           :http_client => http_client,
           :json_parser => json_parser
         )
       end
 
+      def number_of_images
+        3
+      end
 
       def http_client
         Deja::AsyncHTTPClient.new
