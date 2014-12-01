@@ -23,7 +23,7 @@ Then(/^I should see an image related to the given topic$/) do
 end
 
 Then(/^I should see a youtube video related to the given topic$/) do
-  pending # express the regexp above with the code you wish you had
+  expect(page).to have_css("iframe[src='http://www.youtube.com/embed/CLu0lg4U0GM']")
 end
 
 Then(/^I should see a link to a wikipedia page about another topic related to the given topic$/) do

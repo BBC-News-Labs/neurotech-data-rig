@@ -109,6 +109,7 @@ Deja.ContentList.prototype = {
     });
     this._subscribeWikilinks();
     this._subscribeImages();
+    this._subscribeVideos();
   },
 
   _subscribeWikilinks: function() {
@@ -131,11 +132,26 @@ Deja.ContentList.prototype = {
     }));
   },
 
+  _subscribeVideos: function() {
+    this._client.subscribe("/video", bind(this, function(message) {
+      this._appendItem(function(element) { 
+        element.setAttribute("class", "video")
+        var iframe = document.createElement("iframe");
+        iframe.setAttribute("src", message.url)
+        iframe.setAttribute("frameborder", "0")
+        iframe.setAttribute("allowfullscreen", "allowfullscreen")
+        iframe.setAttribute("width", "100%")
+        element.appendChild(iframe);
+        iframe.setAttribute("height", 9/16*iframe.offsetWidth);
+      });
+    }));
+  },
+
   _appendItem: function(callback) {
     var element = document.createElement("li")
+    this._list.appendChild(element);
     callback(element)
     window.scrollTo(0,document.body.scrollHeight);
-    this._list.appendChild(element);
     this._masonry.appended(element);
     this._masonry.layout();
   }

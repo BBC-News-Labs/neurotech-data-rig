@@ -7,6 +7,7 @@ require 'deja/message_dispatcher'
 require 'deja/message_handlers/playback_ended'
 require 'deja/services/wikipedia'
 require 'deja/services/google_image_search'
+require 'deja/services/youtube_search'
 require 'deja/async_http_client'
 
 module Deja
@@ -85,6 +86,7 @@ module Deja
           :publisher => faye_client,
           :wikipedia_service => wikipedia_service,
           :images_service => images_service,
+          :videos_service => videos_service,
         )
       end
 
@@ -105,6 +107,13 @@ module Deja
 
       def number_of_images
         3
+      end
+
+      def videos_service
+        Deja::Services::YouTubeSearch.new(
+          :http_client => http_client,
+          :json_parser => json_parser
+        )
       end
 
       def http_client

@@ -51,11 +51,22 @@ describe Deja::MessageHandlers::PlaybackEnded do
     double(:image_url) 
   }
 
+  let(:videos_service) {
+    double(:videos_service).tap do |videos_service|
+      allow(videos_service).to receive(:lookup_term).and_yield(video_url)
+    end
+  }
+
+  let(:video_url) {
+    double(:video_url) 
+  }
+
   subject(:handler) {
     Deja::MessageHandlers::PlaybackEnded.new({
-      :publisher => publisher,
+      :publisher         => publisher,
       :wikipedia_service => wikipedia_service,
-      :images_service => images_service
+      :images_service    => images_service,
+      :videos_service    => videos_service,
     }) 
   }
 
@@ -83,6 +94,18 @@ describe Deja::MessageHandlers::PlaybackEnded do
       handler.call(message)
       expect(publisher).to have_received(:publish).with("/image", {
         :url => image_url
+      })
+    end
+
+    it "calls the videos service with the tag from the message" do
+      handler.call(message)
+      expect(videos_service).to have_received(:lookup_term).with(tag)
+    end
+
+    it "responds on the /video channel with the video embed url" do
+      handler.call(message)
+      expect(publisher).to have_received(:publish).with("/video", {
+        :url => video_url
       })
     end
   end
