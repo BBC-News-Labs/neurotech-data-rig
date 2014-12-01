@@ -40,15 +40,11 @@ describe Deja::Services::GoogleImageSearch do
     double(:term) 
   }
 
-  let(:arguments) {
-    { 
+  subject(:service)  {
+    Deja::Services::GoogleImageSearch.new(
       :http_client => http_client,
       :json_parser => json_parser 
-    }
-  }
-
-  subject(:service)  {
-    Deja::Services::GoogleImageSearch.new(arguments) 
+    ) 
   } 
 
   describe "#lookup_term" do
@@ -73,17 +69,9 @@ describe Deja::Services::GoogleImageSearch do
       expect { |b| service.lookup_term(term, &b) }.to yield_with_args("http://example.com/ronnies.jpg");
     end
 
-    context "when the configured number of images is greater than 1" do
-      let(:arguments) {
-        { 
-          :number_of_images => 3,
-          :http_client      => http_client,
-          :json_parser      => json_parser
-        }
-      }
-
+    context "when a specific number of images is provided" do
       it "yields the correct number of images" do
-        expect { |b| service.lookup_term(term, &b) }.to yield_successive_args(
+        expect { |b| service.lookup_term(term, 3, &b) }.to yield_successive_args(
           "http://example.com/ronnies.jpg",
           "http://example.com/ronnies_2.jpg",
           "http://example.com/ronnies_3.jpg",

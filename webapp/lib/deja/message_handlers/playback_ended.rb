@@ -9,9 +9,9 @@ module Deja
       end
 
       def call(message)
-        _, file_name, year, genre, tag = message.split(":")
+        _, file_name, year, genre, tag, rank = message.split(":")
         publish_wikilink(tag)
-        publish_image(tag)
+        publish_image(tag, rank.to_i)
         publish_video(tag)
       end
 
@@ -29,8 +29,8 @@ module Deja
           end
         end
 
-        def publish_image(tag)
-          images_service.lookup_term(tag) do |url|
+        def publish_image(tag, rank)
+          images_service.lookup_term(tag, number_of_images(rank)) do |url|
             publisher.publish("/image", {:url => url})
           end
         end
@@ -39,6 +39,10 @@ module Deja
           videos_service.lookup_term(tag) do |url|
             publisher.publish("/video", {:url => url})
           end
+        end
+
+        def number_of_images(rank)
+          rank == 0 ? 3 : 1
         end
     end
   end

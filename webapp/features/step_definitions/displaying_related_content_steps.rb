@@ -1,11 +1,12 @@
 Given(/^I am viewing the related content page$/) do
   visit "/related_content"
+  sleep 2 #Give faye time to subscribe
 end
 
 When(/^the video finishes playing$/) do
   test_client = TestMessagingClient.new
-  test_client.send_message("videoPlaybackEnded:1980_2Ronnies.mp4:1980:Comedy:The Two Ronnies")
-  sleep 2
+  test_client.send_message("videoPlaybackEnded:1980_2Ronnies.mp4:1980:Comedy:The Two Ronnies:0")
+  sleep 2 #Make sure we can receive the messages
   test_client.finalize
 end
 

@@ -37,8 +37,12 @@ describe Deja::MessageHandlers::PlaybackEnded do
     "The Moon Landings"  
   }
 
+  let(:rank) {
+    0 
+  }
+
   let(:message) {
-    "videoPlaybackEnded:moon_landings.mp4:1969:History:#{tag}" 
+    "videoPlaybackEnded:moon_landings.mp4:1969:History:#{tag}:#{rank}" 
   }
 
   let(:images_service) {
@@ -84,10 +88,21 @@ describe Deja::MessageHandlers::PlaybackEnded do
         :url     => wikipedia_url
       })
     end
+    
+    context "when the rank is 0" do
+      it "requests 3 images for the given tag from the image service" do
+        handler.call(message)
+        expect(images_service).to have_received(:lookup_term).with(tag, 3)
+      end
+    end
 
-    it "calls the images service with the tag from the message" do
-      handler.call(message)
-      expect(images_service).to have_received(:lookup_term).with(tag)
+    context "when the rank is > 0" do
+      let(:rank) { 1 }
+
+      it "requests 1 image for the given tag from the image service" do
+        handler.call(message)
+        expect(images_service).to have_received(:lookup_term).with(tag, 1)
+      end
     end
 
     it "responds on the /image channel with the image's url" do

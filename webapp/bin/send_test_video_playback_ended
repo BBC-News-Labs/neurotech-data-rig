@@ -25,4 +25,6 @@ TAGS = [
 context = ZMQ::Context.new
 socket = context.socket(ZMQ::PAIR)
 socket.connect(ADDRESS)
-socket.send_string("videoPlaybackEnded:1981_2Ronnies.mp4:1980:Comedy:#{TAGS.sample}")
+(0..2).each do |rank|
+  socket.send_string("videoPlaybackEnded:1981_2Ronnies.mp4:1980:Comedy:#{TAGS.sample}:#{rank}")
+end
