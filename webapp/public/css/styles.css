@@ -82,3 +82,9 @@ a:hover {
 #related_content_items li h2 a:hover {
   text-decoration: underline;
 }
+
+.news_labs_logo {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+}
