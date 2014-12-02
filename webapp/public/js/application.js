@@ -152,8 +152,10 @@ Deja.ContentList.prototype = {
     this._list.appendChild(element);
     callback(element)
     window.scrollTo(0,document.body.scrollHeight);
-    this._masonry.appended(element);
-    this._masonry.layout();
+    window.setTimeout(bind(this, function() {
+      this._masonry.appended(element);
+      this._masonry.layout();
+    }), 0);
   }
 };
 
