@@ -84,7 +84,7 @@ service { "deja":
 }
 
 service { "deja-broker":
-  require => [File["/etc/init/deja-broker.conf"], Exec["bundle install"], File["/etc/environment.d/deja"], File["/etc/environment.d/deja_secrets"], Service["deja"]],
+  require => [File["/etc/init/deja-broker.conf"], Exec["bundle install"], File["/etc/environment.d/deja"], File["/etc/environment.d/deja_secrets"], Service["deja"], Service["logstash"]],
   ensure => "running",
   provider => "upstart",
 }
@@ -215,7 +215,7 @@ file { "/etc/logstash/logstash.conf":
 }
 
 service { "logstash":
-  require => [File["/etc/logstash/logstash.conf"], File["/etc/init/logstash.conf"],  File["/usr/local/logstash"], Package["libzmq3-dev"], Package["elasticsearch"], Package["openjdk-7-jre-headless"], Package["libzmq3"], Service["deja-broker"]],
+  require => [File["/etc/logstash/logstash.conf"], File["/etc/init/logstash.conf"],  File["/usr/local/logstash"], Package["libzmq3-dev"], Package["elasticsearch"], Package["openjdk-7-jre-headless"], Package["libzmq3"]],
   ensure   => "running",
   provider => "upstart", 
 }

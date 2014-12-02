@@ -21,8 +21,9 @@ module Deja
       trap(:INT) { EM.stop }
       trap(:TERM){ EM.stop }
       EM.run do
-        zmq_socket.on(:message) do |message|
+        zmq_in_socket.on(:message) do |message|
           text = message.copy_out_string
+          zmq_out_socket.send_string(text)
           dispatcher.route(text)
           message.close
         end
@@ -45,18 +46,24 @@ module Deja
         @context ||= EM::ZeroMQ::Context.new(zmq_thread_pool_size)
       end
 
-      def zmq_socket
-        @socket ||= zmq_context.socket(ZMQ::PAIR).tap do |socket|
-          socket.bind(zmq_socket_address)
+      def zmq_in_socket
+        @zmq_in_socket ||= zmq_context.socket(ZMQ::PAIR).tap do |socket|
+          socket.bind(zmq_in_socket_address)
         end
       end
 
-      def zmq_socket_address
+      def zmq_in_socket_address
         ENV.fetch("DEJA_SENSOR_DATA_ADDRESS")
       end
 
-      def zmq_topic
-        ""
+      def zmq_out_socket
+        @zmq_out_socket ||= zmq_context.socket(ZMQ::PAIR).tap do |socket|
+          socket.connect(zmq_out_socket_address)
+        end
+      end
+
+      def zmq_out_socket_address
+        ENV.fetch("DEJA_LOG_DATA_ADDRESS")
       end
 
       def zmq_thread_pool_size
