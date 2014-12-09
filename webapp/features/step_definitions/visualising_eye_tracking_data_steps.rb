@@ -1,5 +1,9 @@
 Given(/^I am viewing the sensor data page$/) do
   visit "/sensor_data"
+  execute_script %{
+    HTMLElement.prototype["play"] = function() {};
+    HTMLElement.prototype["load"] = function() {};
+  }
   sleep 2 #Give faye time to subscribe
 end
 

@@ -23,6 +23,10 @@ Deja.prototype = {
         var contentList = new Deja.ContentList();
         contentList.init();
         break;
+      case "/sensor_data":
+        var sensorData = new Deja.SensorData();
+        sensorData.init();
+        break;
     }
   }
 };
@@ -156,6 +160,22 @@ Deja.ContentList.prototype = {
       this._masonry.appended(element);
       this._masonry.layout();
     }), 0);
+  }
+};
+
+Deja.SensorData = function() {
+  this._client = new Faye.Client("/faye");
+  this._player = document.getElementById("player");
+};
+
+Deja.SensorData.prototype = {
+  init: function() {
+    this._client.subscribe("/start_playback", bind(this, function(message) {
+      var source = this._player.children[0];
+      source.setAttribute("src", message.url);
+      this._player.load();
+      this._player.play();
+    })) 
   }
 };
 

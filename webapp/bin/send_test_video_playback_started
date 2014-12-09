@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'ffi-rzmq'
+ADDRESS = ENV.fetch("DEJA_SENSOR_DATA_ADDRESS")
+context = ZMQ::Context.new
+socket = context.socket(ZMQ::PAIR)
+socket.connect(ADDRESS)
+time = Time.now.to_i
+socket.send_string("videoPlaybackStarted:#{time}:1980_2Ronnies.mp4")

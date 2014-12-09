@@ -5,6 +5,7 @@ require 'faye'
 require 'json'
 require 'deja/message_dispatcher'
 require 'deja/message_handlers/playback_ended'
+require 'deja/message_handlers/playback_started'
 require 'deja/services/wikipedia'
 require 'deja/services/google_image_search'
 require 'deja/services/youtube_search'
@@ -78,6 +79,7 @@ module Deja
       def dispatcher
         Deja::MessageDispatcher.new({
           "videoPlaybackEnded"  => playback_ended_handler,
+          "videoPlaybackStarted" => playback_started_handler,
         });
       end
 
@@ -88,6 +90,17 @@ module Deja
           :images_service => images_service,
           :videos_service => videos_service,
         )
+      end
+
+      def playback_started_handler
+        Deja::MessageHandlers::PlaybackStarted.new(
+          :publisher   => faye_client,
+          :videos_path => videos_path,
+        )
+      end
+
+      def videos_path
+        "/video/"
       end
 
       def wikipedia_service
