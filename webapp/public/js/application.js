@@ -166,6 +166,7 @@ Deja.ContentList.prototype = {
 Deja.SensorData = function() {
   this._client = new Faye.Client("/faye");
   this._player = document.getElementById("player");
+  this._overlay = document.getElementById("overlay");
 };
 
 Deja.SensorData.prototype = {
@@ -175,8 +176,33 @@ Deja.SensorData.prototype = {
       source.setAttribute("src", message.url);
       this._player.load();
       this._player.play();
+      this._player.addEventListener("playing", bind(this, this._setupOverlay));
     })) 
-  }
+  },
+
+  _setupOverlay: function() {
+    var zoomRatio = this._player.offsetHeight / this._player.videoHeight;
+    var playerHeight = zoomRatio * this._player.videoHeight;
+    var playerWidth = zoomRatio * this._player.videoWidth;
+    var playerOffset = (this._player.offsetWidth - playerWidth) / 2;
+    this._overlay.style.width = playerWidth + "px";
+    this._overlay.style.height = playerHeight + "px";
+    this._overlay.style.left = playerOffset + "px";   
+    this._setupD3(playerWidth, playerHeight);
+  },
+
+  _setupD3: function(width, height) {
+    var svg = d3.select(this._overlay).append("svg")
+      .attr("height", height)
+      .attr("width", width);
+
+    svg.append("circle")
+      .attr("cx", width / 2)
+      .attr("cy", height / 2)
+      .attr("r", "100")
+      .attr("fill", "#ffffff")
+      .attr("opacity", "0.2");
+  },
 };
 
 document.addEventListener("DOMContentLoaded", function() {

@@ -6,6 +6,7 @@ require 'json'
 require 'deja/message_dispatcher'
 require 'deja/message_handlers/playback_ended'
 require 'deja/message_handlers/playback_started'
+require 'deja/message_handlers/eye_tracking_fixation'
 require 'deja/services/wikipedia'
 require 'deja/services/google_image_search'
 require 'deja/services/youtube_search'
@@ -80,6 +81,7 @@ module Deja
         Deja::MessageDispatcher.new({
           "videoPlaybackEnded"  => playback_ended_handler,
           "videoPlaybackStarted" => playback_started_handler,
+          "eyeTrackingFixation" => eye_tracking_fixation_handler,
         });
       end
 
@@ -96,6 +98,12 @@ module Deja
         Deja::MessageHandlers::PlaybackStarted.new(
           :publisher   => faye_client,
           :videos_path => videos_path,
+        )
+      end
+
+      def eye_tracking_fixation_handler
+        Deja::MessageHandlers::EyeTrackingFixation.new(
+          :publisher => faye_client, 
         )
       end
 

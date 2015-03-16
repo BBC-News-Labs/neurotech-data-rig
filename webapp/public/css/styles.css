@@ -88,3 +88,10 @@ a:hover {
   right: 10px;
   bottom: 10px;
 }
+
+#overlay {
+  position: absolute;
+  top: 0px;
+  margin: 0;
+  padding: 0;
+}
